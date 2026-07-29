@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# SAFE -- repository hygiene
+#
+# Only source, scripts, parsed results, and the trace manifest belong in git.
+# Build output and simulator dumps are regenerable: build_variants.sh + probe.sh.
+#
+# The malloc/free-instrumented traces (trace/*.xz, ~2.8 GB) ship as GitHub
+# *Release assets*, not git objects -- 18 of the 25 exceed GitHub's 100 MB hard
+# per-file limit. Fetch them with fetch_traces.sh; trace/SHA256SUMS pins them.
+# ---------------------------------------------------------------------------
+
+# --- Build output ----------------------------------------------------------
+bin/
+obj/
+*.o
+*.so
+*.a
+tracer/obj-intel64/
+
+# Stray built binaries committed by accident
+/ip_guard
+
+# --- Simulator output / results dumps --------------------------------------
+# Regenerable: re-run build_variants.sh + probe.sh / run.sh.
+# The parsed summary (Results_IPC.csv) IS tracked.
+probe_output/
+temp_output/
+sanity/
+/output/
+
+# Per-benchmark debug dumps (GB-scale plaintext dumps of execution)
+/debug.txt
+/temp.txt
+/pop2.txt
+/roms523.txt
+/gcc_s-734.txt
+
+# --- Logs / scratch --------------------------------------------------------
+*.log
+/master_log.txt
+
+# --- Traces -----------------------------------------------------------------
+# Instrumented traces come from Release assets (see fetch_traces.sh). The
+# SHA256SUMS manifest in that directory IS tracked, so it must not be ignored.
+/trace/*.xz
+/trace/*.trace
+/trace/*.trace.txt
+
+# --- Editor / OS / Python --------------------------------------------------
+.vscode/
+*.swp
+*.swo
+.*.sw?
+__pycache__/
+*.pyc
+*~
+.DS_Store
